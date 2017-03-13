@@ -1,0 +1,211 @@
+{% extends 'master.twig' %}
+
+{% block content %}
+
+<div class="page-header">
+    <a onclick="addTransaction()" role="button" class="btn btn-primary pull-right"><i class="fa fa-plus"></i> Add</a>
+    <div id="datepicker-range" class="input-daterange input-group pull-right hidden-xs" style="margin-right:10px; max-width: 300px;">
+        <input type="text" class="form-control" name="from" />
+        <span class="input-group-addon">to</span>
+        <input type="text" class="form-control" name="to" />
+    </div>
+    <div class="btn-group pull-right" style="margin-right:10px;">
+        <button id="prev-month" type="button" class="btn btn-default" aria-label="Previous Month">&nbsp;<span class="fa fa-arrow-left" aria-hidden="true"></span>&nbsp;</button>
+        <button id="next-month" type="button" class="btn btn-default" aria-label="Next Month">&nbsp;<span class="fa fa-arrow-right" aria-hidden="true"></span>&nbsp;</button>
+    </div>
+    <h1>Transactions</h1>
+</div>
+
+<table id="table" class="table table-hover" width="100%"></table>
+
+<style>
+    .vertical-middle {
+        vertical-align: middle !important;
+    }
+</style>
+
+<script>
+var curSearch = null;
+
+var loadDataTable = function(from, to, search) {
+    curSearch = (from && to) ? "?made_on>=" + from + "&made_on<=" + to : search;
+    
+    $('#table').DataTable({
+        paging: false,
+        retrieve: true,
+        ajax: {
+            url: "/transactions/" + curSearch,
+            dataSrc: ""
+        },
+        drawCallback: function ( settings ) {
+            var api = this.api();
+            var rows = api.rows( {page:'current'} ).nodes();
+            var last = null;
+ 
+            api.column(1, {page:'current'} ).data().each( function ( group, i ) {
+                if ( last !== group ) {
+                    $(rows).eq( i ).before(
+                        '<tr style="background:#EFEFEF"><td colspan="9"><b>' + moment(group).format("DD MMM YYYY, ddd") + '</b></td></tr>'
+                    );
+                    last = group;
+                }
+            });
+        },
+        order: [[1, "desc"]],
+        columns: [
+            { title: "ID", data: "transaction_id", visible: false },
+            { title: "Date", data: "made_on", visible: false },
+            {
+                orderable: false,
+                render: function(data, type, row) {
+                    var icon = "<span style='color:#444; font-size:40px; margin-top:6px;' class='fa fa-" + row.category_icon + "'></span>";
+                    
+                    var category = "<span style='font-size:18px;'>" + row.category_name + "</span>";
+                    
+                    var resource = "";
+                    if(row.out_amount)
+                        resource += getLabelItemTemplate(row.out_resource_name, row.out_resource_color);
+                    if(row.in_amount && row.out_amount)
+                        resource += " <i class='fa fa-long-arrow-right'></i> ";
+                    if(row.in_amount)
+                        resource += getLabelItemTemplate(row.in_resource_name, row.in_resource_color);
+                    
+                    
+                    var tag = "";
+                    $.each(row.tags, function(i, t) {
+                        tag += "<span class='label' style='color:gray; border:lightgray solid 1px; line-height:2.5;'>" + t.tag_name + "</span> ";
+                    });
+                    if(tag)
+                        tag += "<br>";
+                    
+                    var description = row.description ? "<span style='font-size:14px;'>" + row.description + "</span>" : "";
+                    
+                    var amount = "";
+                    var double = row.in_amount && row.out_amount;
+                    if(row.in_amount) {
+                        amount += "<span style='color:gray; font-size:11px;'>" + row.in_currency_name + "</span>";
+                        amount += double ? " " : "<br>";
+                        amount += "<span style='font-size:" + (double ? "18px" : "22px") + "; color:green;'>" + parseFloat(row.in_amount).toFixed(2) + "</span>";
+                    }
+                    if(double)
+                        amount += "<br>";
+                    if(row.out_amount) {
+                        amount += "<span style='color:gray; font-size:11px;'>" + row.out_currency_name + "</span>";
+                        amount += double ? " " : "<br>";
+                        amount += "<span style='font-size:" + (double ? "18px" : "22px") + "; color:red;'>" + parseFloat(row.out_amount).toFixed(2) + "</span>";
+                    }
+                    
+                    var operation = '<button class="btn btn-sm btn-default" onclick="editTransaction(' + row.transaction_id + ')"><i class="fa fa-pencil"></i></button><br>\
+                        <button class="btn btn-sm btn-default" onclick="deleteTransaction(' + row.transaction_id + ')"><i class="fa fa-trash-o"></i></button>';
+                    
+                    var html = "\
+                        <div class='row' onclick='if($(window).width() < 768) editTransaction(" + row.transaction_id + ");'>\
+                            <div class='col-sm-1 col-xs-2 text-center'>\
+                                " + icon + "\
+                            </div>\
+                            <div class='col-sm-4 col-xs-6'>\
+                                " + category + "<br>\
+                                " + resource + "\
+                            </div>\
+                            <div class='col-sm-4 hidden-xs'>\
+                                " + tag + "\
+                                " + description + "\
+                            </div>\
+                            <div class='col-sm-2 col-xs-4'>\
+                                <div class='text-right'>" + amount + "</div>\
+                            </div>\
+                            <div class='col-sm-1 hidden-xs'>\
+                                <div class='text-right'>" + operation + "</div>\
+                            </div>\
+                        </div>";
+                    
+                    return html;
+                }
+            }
+        ]
+    });
+};
+
+var addTransaction = function() {
+    Cookies.set("prev-list-search", curSearch);
+    location.href = "/transactions/add";
+};
+
+var editTransaction = function(transaction_id) {
+    Cookies.set("prev-list-search", curSearch);
+    location.href = "/transactions/" + transaction_id + "/edit";
+};
+
+var deleteTransaction = function(transaction_id) {
+    bootbox.confirm("Delete transaction " + transaction_id + "?", function(result){
+        if(result)
+            $.ajax({
+                url: "/transactions/" + transaction_id,
+                method: "DELETE",
+                success: function() {
+                    $('#table').DataTable().destroy();
+                    loadDataTable(getDateFrom(), getDateTo());
+                },
+                error: function() {
+                    alert("error");
+                }
+            });
+    });
+};
+
+var getDateFrom = function() {
+    return moment($("#datepicker-range [name=from]").datepicker("getDate")).format("YYYY-MM-DD");
+};
+
+var getDateTo = function() {
+    return moment($("#datepicker-range [name=to]").datepicker("getDate")).format("YYYY-MM-DD");
+};
+
+$(document).ready(function() {
+    
+    $('#datepicker-range').datepicker({
+        format: "yyyy-mm-dd",
+        maxViewMode: 2,
+        todayBtn: true,
+        autoclose: true,
+        todayHighlight: true
+    });
+
+    var search = location.search || Cookies.get("prev-list-search");
+    if(search) {
+        if(search.indexOf("made_on>="))
+            $("#datepicker-range [name=from]").datepicker("update", search.substring(search.indexOf("made_on>=") + 9, search.indexOf("made_on>=") + 19));
+        if(search.indexOf("made_on<="))
+            $("#datepicker-range [name=to]").datepicker("update", search.substring(search.indexOf("made_on<=") + 9, search.indexOf("made_on<=") + 19));
+        loadDataTable(null, null, search);
+        Cookies.remove("prev-list-search");
+    }
+    else {
+        $("#datepicker-range [name=from]").datepicker("update", moment().startOf('month').toDate());
+        $("#datepicker-range [name=to]").datepicker("update", moment().endOf('month').toDate());
+        loadDataTable(getDateFrom(), getDateTo());
+    }
+    
+    $('#datepicker-range').datepicker().on("changeDate", function(e) {
+        $('#table').DataTable().destroy();
+        loadDataTable(getDateFrom(), getDateTo());
+    });
+    
+    $("#prev-month").click(function(){
+        $('#table').DataTable().destroy();
+        $("#datepicker-range [name=from]").datepicker("update", moment(getDateFrom()).subtract(1, "month").startOf("month").toDate());
+        $("#datepicker-range [name=to]").datepicker("update", moment(getDateFrom()).endOf("month").toDate());
+        loadDataTable(getDateFrom(), getDateTo());
+    });
+    
+    $("#next-month").click(function(){
+        $('#table').DataTable().destroy();
+        $("#datepicker-range [name=from]").datepicker("update", moment(getDateFrom()).add(1, "month").startOf("month").toDate());
+        $("#datepicker-range [name=to]").datepicker("update", moment(getDateFrom()).endOf("month").toDate());
+        loadDataTable(getDateFrom(), getDateTo());
+    });
+});    
+    
+</script>
+
+{% endblock %}

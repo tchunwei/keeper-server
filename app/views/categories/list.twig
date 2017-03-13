@@ -1,0 +1,154 @@
+{% extends 'master.twig' %}
+
+{% block content %}
+
+<div class="page-header">
+    <a href="/categories/add" role="button" class="btn btn-primary pull-right"><i class="fa fa-plus"></i> Add</a>
+    <div id="datepicker-range" class="input-daterange input-group pull-right hidden-xs" style="margin-right:10px; max-width: 300px;">
+        <input type="text" class="form-control" name="from" />
+        <span class="input-group-addon">to</span>
+        <input type="text" class="form-control" name="to" />
+    </div>
+    <div class="btn-group pull-right" style="margin-right:10px;">
+        <button id="prev-month" type="button" class="btn btn-default" aria-label="Previous Month">&nbsp;<span class="fa fa-arrow-left" aria-hidden="true"></span>&nbsp;</button>
+        <button id="next-month" type="button" class="btn btn-default" aria-label="Next Month">&nbsp;<span class="fa fa-arrow-right" aria-hidden="true"></span>&nbsp;</button>
+    </div>
+    <h1>Categories</h1>
+</div>
+
+<div id="categories">
+    <ul class="list-group"></ul>
+</div>
+
+<style>
+    .category-item {
+        font-size: 20px;
+    }
+    .category-total {
+        text-align: right;
+    }
+</style>
+
+<script>
+var curSearch = null;
+
+var loadCategories = function(from, to, search) {
+    curSearch = (from && to) ? "made_on>=" + from + "&made_on<=" + to : search;
+    
+    $.get("/categories/", curSearch, function(categories) {
+
+        $("#categories .list-group").html("");
+
+        while(categories.length > 0) {
+            categories = $.grep(categories, function(category) {
+                var parent = $("#categories");
+                if(category.parent_category_id) {
+                    parent = $("#categories").find("[id=" + category.parent_category_id + "]");
+                    if(parent.length === 0 )
+                        return true; // not yet added, next loop
+                    parent.addClass("sortableListsOpen");
+                }
+                if(parent.children("ul").length === 0)
+                    parent.append("<ul>");
+                var totalsDOM = "";
+                $.each(category.totals, function(i, total) {
+                    var currencyDOM = "<span style='color:gray; font-size:11px;'>" + total.currency_name + "</span> ";
+                    var negative =  total.total < 0;
+                    var totalString = parseFloat(negative ? -total.total : total.total).toFixed(2);
+                    var amountDOM = "<span style='font-size:16px;color:" + (negative ? "red" : "green") + "'>" + totalString + "</span> "; 
+                    totalsDOM +=  currencyDOM + amountDOM + "<br>";
+                });
+                parent.children("ul").append(`
+                    <li class='list-group-item' id=` + category.category_id + `>
+                        <div>
+                            <div class='row'>
+                                <div class='col-md-8 category-item'>
+                                    <span class='fa fa-` + category.icon + `'></span> ` + category.category_name + `</span>
+                                </div>
+                                <div class='col-md-4 category-total'>
+                                    ` + totalsDOM + `
+                                </div>
+                            </div>
+                        </div>
+                    </li>`);
+                return false;
+            });
+        }
+    });
+};
+
+var getDateFrom = function() {
+    return moment($("#datepicker-range [name=from]").datepicker("getDate")).format("YYYY-MM-DD");
+};
+
+var getDateTo = function() {
+    return moment($("#datepicker-range [name=to]").datepicker("getDate")).format("YYYY-MM-DD");
+};
+
+$(document).ready(function() {
+
+    $('#datepicker-range').datepicker({
+        format: "yyyy-mm-dd",
+        maxViewMode: 2,
+        todayBtn: true,
+        autoclose: true,
+        todayHighlight: true
+    });
+
+    var search = location.search || Cookies.get("prev-list-search");
+    if(search) {
+        if(search.indexOf("made_on>="))
+            $("#datepicker-range [name=from]").datepicker("update", search.substring(search.indexOf("made_on>=") + 9, search.indexOf("made_on>=") + 19));
+        if(search.indexOf("made_on<="))
+            $("#datepicker-range [name=to]").datepicker("update", search.substring(search.indexOf("made_on<=") + 9, search.indexOf("made_on<=") + 19));
+        loadCategories(null, null, search);
+        Cookies.remove("prev-list-search");
+    }
+    else {
+        $("#datepicker-range [name=from]").datepicker("update", moment().startOf('month').toDate());
+        $("#datepicker-range [name=to]").datepicker("update", moment().endOf('month').toDate());
+        loadCategories(getDateFrom(), getDateTo());
+    }
+    
+    $('#datepicker-range').datepicker().on("changeDate", function(e) {
+        $('#table').DataTable().destroy();
+        loadCategories(getDateFrom(), getDateTo());
+    });
+    
+    $("#prev-month").click(function(){
+        $('#table').DataTable().destroy();
+        $("#datepicker-range [name=from]").datepicker("update", moment(getDateFrom()).subtract(1, "month").startOf("month").toDate());
+        $("#datepicker-range [name=to]").datepicker("update", moment(getDateFrom()).endOf("month").toDate());
+        loadCategories(getDateFrom(), getDateTo());
+    });
+    
+    $("#next-month").click(function(){
+        $('#table').DataTable().destroy();
+        $("#datepicker-range [name=from]").datepicker("update", moment(getDateFrom()).add(1, "month").startOf("month").toDate());
+        $("#datepicker-range [name=to]").datepicker("update", moment(getDateFrom()).endOf("month").toDate());
+        loadCategories(getDateFrom(), getDateTo());
+    });
+
+    $('#categories>ul').sortableLists({
+        opener: { as: 'html' },
+        placeholderCss: { 'background-color':'lightgray' },
+        hintCss: { 'background-color':'lightgreen' },
+        onChange: function(a) {
+            var categories = $('#categories>ul').sortableListsToArray();
+            $.each(categories, function(i, category){
+                categories[i]["category_id"] = category.id;
+                delete categories[i]["id"];
+                
+                categories[i]["parent_category_id"] = category.parentId || null;
+                delete categories[i]["parentId"];
+            });console.log(categories);
+            //$.post("/categories/", { categories: categories }, function() {
+                
+            //});
+        }
+    });
+});    
+    
+</script>
+
+{% endblock %}
