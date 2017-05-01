@@ -21,21 +21,35 @@ class CategoryModel {
 
         $categories = $this->db->query("
             SELECT
-	            category.*,
-	            currency_name,
-	            COALESCE(total, 0) AS total
-            FROM category
-            LEFT JOIN (
-                SELECT 
-                    category.*,
-                    currency_name,
-                    COALESCE(SUM(in_amount), 0) - COALESCE(SUM(out_amount), 0) AS total
-                FROM category
-                LEFT JOIN transaction ON transaction.category_id=category.category_id OR category.category_id IS NULL
-                JOIN currency ON transaction.in_currency_id=currency.currency_id OR transaction.out_currency_id=currency.currency_id
-                $whereClause
-                GROUP BY category.category_id, currency_id)
-            t1 ON t1.category_id=category.category_id
+                category.*,
+                currency_name,
+                COALESCE(SUM(sum_in) - SUM(sum_out), 0) AS total
+            FROM
+            (SELECT * FROM
+                (
+                    SELECT 
+                        category_id,
+                        in_currency_id AS currency_id,
+                        COALESCE(SUM(in_amount), 0) AS sum_in,
+                        0 AS sum_out
+                    FROM transaction
+                    $whereClause
+                    GROUP BY category_id, in_currency_id
+                UNION
+                    SELECT 
+                        category_id,
+                        out_currency_id  AS currency_id,
+                        0 AS sum_in,
+                        COALESCE(SUM(out_amount), 0) AS sum_out
+                    FROM transaction
+                    $whereClause
+                    GROUP BY category_id, out_currency_id
+                ) t
+                WHERE sum_in <> 0 OR sum_out <> 0
+            ) t1
+            RIGHT JOIN category ON category.category_id=t1.category_id
+            LEFT JOIN currency ON currency.currency_id=t1.currency_id
+            GROUP BY category.category_id, currency_name
             ORDER BY category.order
         ")->fetchAll(PDO::FETCH_ASSOC);
         

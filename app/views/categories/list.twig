@@ -16,11 +16,30 @@
     <h1>Categories</h1>
 </div>
 
+<div class="container">
+    <div class="col-sm-4 text-right">
+        <span class="total-income" style="color: green;"></span><br>
+        <b>TOTAL INCOME</b>
+    </div>
+    <div class="col-sm-4 text-right">
+        <span class="total-expense" style="color: red;"></span><br>
+        <b>TOTAL EXPENSE</b>
+    </div>
+    <div class="col-sm-4 text-right">
+        <span class="net-income"></span><br>
+        <b>NET INCOME</b>
+    </div>
+</div>
+<br>
+
 <div id="categories">
     <ul class="list-group"></ul>
 </div>
 
 <style>
+    .total-income, .total-expense, .net-income {
+        font-size: 40px;
+    }
     .category-item {
         font-size: 20px;
     }
@@ -34,6 +53,8 @@ var curSearch = null;
 
 var loadCategories = function(from, to, search) {
     curSearch = (from && to) ? "made_on>=" + from + "&made_on<=" + to : search;
+    var totalExpense = 0;
+    var totalIncome = 0;
     
     $.get("/categories/", curSearch, function(categories) {
 
@@ -54,6 +75,12 @@ var loadCategories = function(from, to, search) {
                 $.each(category.totals, function(i, total) {
                     var currencyDOM = "<span style='color:gray; font-size:11px;'>" + total.currency_name + "</span> ";
                     var negative =  total.total < 0;
+                    if (total.currency_name === "MYR") {console.log(total.currency_name, total);
+                        if (negative)
+                            totalExpense += parseFloat(total.total);
+                        else
+                            totalIncome += parseFloat(total.total);
+                    }
                     var totalString = parseFloat(negative ? -total.total : total.total).toFixed(2);
                     var amountDOM = "<span style='font-size:16px;color:" + (negative ? "red" : "green") + "'>" + totalString + "</span> "; 
                     totalsDOM +=  currencyDOM + amountDOM + "<br>";
@@ -74,6 +101,12 @@ var loadCategories = function(from, to, search) {
                 return false;
             });
         }
+        
+        $(".total-income").html(totalIncome.toFixed(2));
+        $(".total-expense").html(totalExpense.toFixed(2));
+        var netIncome = totalIncome + totalExpense;
+        $(".net-income").html(netIncome.toFixed(2));
+        $(".net-income").css("color", netIncome > 0 ? "green" : "red");
     });
 };
 
