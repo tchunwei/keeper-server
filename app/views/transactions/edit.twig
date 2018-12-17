@@ -6,122 +6,143 @@
     <h1>{{ id ? "Edit" : "Add" }} Transaction</h1>
 </div>
 
-<div class="row">
-    <div class="col-md-2 col-sm-1"></div>
-    
-    <div class="col-md-8 col-sm-10">
-        <!-- Tabs -->
-        <ul class="nav nav-tabs nav-justified">
-            <li class="active"><a href="#general" data-toggle="tab">General</a></li>
-            <li><a href="#itemized" data-toggle="tab">Itemized Details</a></li>
-        </ul>
+<div class="transactions">
+    <div class="row single-transaction hidden">
+        <div class="col-md-2 col-sm-1"></div>
         
-        <br>
-        
-        <div class="tab-content">
-            <div id="general" class="tab-pane active fade in">
-                <!-- Category -->
-                <div class="row form-group">
-                    <label class="col-sm-3 text-right">Category</label>
-                    <div class="col-sm-9">
-                        <select id="category" class="form-control" style="width: 100%" autofocus ></select>
-                    </div>
-                </div>
-
-                <!-- Date -->
-                <div class="row form-group">
-                    <label class="col-sm-3 text-right">Date</label>
-                    <div class="col-sm-9">
-                        <div id="made-on" class="input-group date">
-                            <input  type="text" class="form-control">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+        <div class="col-md-8 col-sm-10">
+            <!-- Tabs -->
+            <ul class="nav nav-tabs nav-justified">
+                <li class="active"><a href=".general" data-toggle="tab">General</a></li>
+                <li><a href=".itemized" data-toggle="tab">Itemized Details</a></li>
+            </ul>
+            
+            <br>
+            
+            <div class="tab-content">
+                <div class="general tab-pane active fade in">
+                    <!-- Category -->
+                    <div class="row form-group">
+                        <label class="col-sm-3 text-right">Category</label>
+                        <div class="col-sm-9">
+                            <select class="category form-control" style="width: 100%" autofocus ></select>
                         </div>
                     </div>
-                </div>
 
-                <!-- Income -->
-                <div class="row form-group"> 
-                    <label class="col-sm-3 text-right">Income</label>
-                    <div class="col-sm-9">
-                        <div class="input-group">
-                            <div class="input-group-btn">
-                                <select id="in-resource" class="form-control" style="width: 220px"></select>
-                            </div>
-                            <input id="in-amount" class="form-control text-right" type="number" min="0" style="color:green">
-                            <div class="input-group-btn">
-                                <select id="in-currency" class="form-control" style="width: 100px"></select>
+                    <!-- Date -->
+                    <div class="row form-group">
+                        <label class="col-sm-3 text-right">Date</label>
+                        <div class="col-sm-9">
+                            <div class="made-on input-group date">
+                                <input  type="text" class="form-control">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Expense -->
-                <div class="row form-group"> 
-                    <label class="col-sm-3 text-right">Expense</label>
-                    <div class="col-sm-9">
-                        <div class="input-group">
-                            <div class="input-group-btn">
-                                <select id="out-resource" class="form-control" style="width: 220px"></select>
-                            </div>
-                            <input id="out-amount" class="form-control text-right" type="number" min="0" style="color:red">
-                            <div class="input-group-btn">
-                                <select id="out-currency" class="form-control" style="width: 100px"></select>
+                    <!-- Income -->
+                    <div class="row form-group"> 
+                        <label class="col-sm-3 text-right">Income</label>
+                        <div class="col-sm-9">
+                            <div class="input-group">
+                                <div class="input-group-btn">
+                                    <select class="in-resource form-control" style="width: 190px"></select>
+                                </div>
+                                <input class="in-amount form-control text-right" type="number" min="0" style="color:green">
+                                <div class="input-group-btn">
+                                    <select class="in-currency form-control" style="width: 80px"></select>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Tag -->
-                <div class="row form-group">
-                    <label class="col-sm-3 text-right">Tag</label>
-                    <div class="col-sm-9">
-                        <select id="tag" class="form-control" multiple="true" style="width: 100%"></select>
-                    </div>
-                </div>
-
-                <!-- Description -->
-                <div class="row form-group">
-                    <label class="col-sm-3 text-right">Description</label>
-                    <div class="col-sm-9">
-                        <textarea id="description" class="form-control"></textarea>
-                    </div>
-                </div>
-
-                <!-- Back / Save / Delete buttons -->
-                <div class="row form-group">
-                    <div class="col-sm-3"></div>
-                    <div class="col-sm-9">
-                        <button id="back" type="button" class="btn btn-default"><i class="fa fa-arrow-left"></i> Back</button>
-                        <div class="pull-right">
-                            <button id="delete" type="button" class="btn btn-danger"><i class="fa fa-trash-o"></i> Delete</button>
-                            <button id="save" type="button" class="btn btn-primary"><i class="fa fa-save"></i> {{ id ? "Save" : "Create"}}</button>
+                    <!-- Expense -->
+                    <div class="row form-group"> 
+                        <label class="col-sm-3 text-right">Expense</label>
+                        <div class="col-sm-9">
+                            <div class="input-group">
+                                <div class="input-group-btn">
+                                    <select class="out-resource form-control" style="width: 190px"></select>
+                                </div>
+                                <input class="out-amount form-control text-right" type="number" min="0" style="color:red">
+                                <div class="input-group-btn">
+                                    <select class="out-currency form-control" style="width: 80px"></select>
+                                </div>
+                            </div>
                         </div>
+                    </div>
+
+                    <!-- Tag -->
+                    <div class="row form-group">
+                        <label class="col-sm-3 text-right">Tag</label>
+                        <div class="col-sm-9">
+                            <select class="tag form-control" multiple="true" style="width: 100%"></select>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="row form-group">
+                        <label class="col-sm-3 text-right">Description</label>
+                        <div class="col-sm-9">
+                            <textarea class="description form-control"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="itemized tab-pane fade">
+                    <div class="row">
+                        <label class="col-md-5 col-xs-4">Description</label>
+                        <label class="col-md-3 col-xs-3">Income</label>
+                        <label class="col-md-3 col-xs-3">Expense</label>
+                    </div>
+                    <div class="itemized-entries"></div>
+                    <div class="row">
+                        <div class="col-md-11 col-xs-10"></div>
+                        <div class="col-md-1 col-xs-2">
+                            <button type="button" class="add-itemized-entry btn btn-primary" onclick="addItemizedEntry(this.closest('.single-transaction'), 0, '', 0, 0)">&nbsp;<i class="fa fa-plus"></i>&nbsp;</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-md-5 col-xs-4 text-right">Total</label>
+                        <label class="itemized-total-in col-md-3 col-xs-3 text-right" style="color:green">0.00</label>
+                        <label class="itemized-total-out col-md-3 col-xs-3 text-right" style="color:red">0.00</label>
                     </div>
                 </div>
             </div>
-            
-            <div id="itemized" class="tab-pane fade">
-                <div class="row">
-                    <label class="col-md-5 col-xs-4">Description</label>
-                    <label class="col-md-3 col-xs-3">Income</label>
-                    <label class="col-md-3 col-xs-3">Expense</label>
-                </div>
-                <div id="itemized-entries"></div>
-                <div class="row">
-                    <div class="col-md-11 col-xs-10"></div>
-                    <div class="col-md-1 col-xs-2">
-                        <button type="button" class="btn btn-primary" onclick="addItemizedEntry(0, '', 0, 0)">&nbsp;<i class="fa fa-plus"></i>&nbsp;</button>
-                    </div>
-                </div>
-                <div class="row">
-                    <label class="col-md-5 col-xs-4 text-right">Total</label>
-                    <label id="itemized-total-in" class="col-md-3 col-xs-3 text-right" style="color:green">0.00</label>
-                    <label id="itemized-total-out" class="col-md-3 col-xs-3 text-right" style="color:red">0.00</label>
+            <div class="pull-right">
+                <i class="status-icon fa"></i>
+            </div>
+            <br>
+            <hr/>
+        </div>
+        <div class="col-md-2 col-sm-1"></div>
+    </div>
+</div>
+
+<!-- Back / Save / Delete buttons -->
+<div class="row">
+    <div class="col-md-2 col-sm-1"></div>
+    <div class="col-md-8 col-sm-10">
+        <div class="row form-group">
+            <div class="col-sm-12">
+                <div class="pull-right">
+                    <button id="add-transaction" type="button" class="btn btn-primary">&nbsp;<i class="fa fa-plus"></i>&nbsp;</button>
                 </div>
             </div>
         </div>
+        <div class="row form-group">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-9">
+                <button id="back" type="button" class="btn btn-default"><i class="fa fa-arrow-left"></i> Back</button>
+                <div class="pull-right">
+                    <button id="delete" type="button" class="btn btn-danger"><i class="fa fa-trash-o"></i> Delete</button>
+                    <button id="save" type="button" class="btn btn-primary"><i class="fa fa-save"></i> {{ id ? "Save" : "Create"}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="col-md-2 col-sm-1"></div>
-</div> 
+</div>
 
 <style>
     .form-label {
@@ -134,60 +155,123 @@
 <script>
 $.fn.select2.defaults.set( "theme", "bootstrap" );
 
-var addItemizedEntry = function(id, description, income, expense) {
-    $("#itemized-entries").append('\
+var addItemizedEntry = function(singleTransactionRef, id, description, income, expense) {
+    $(singleTransactionRef).find(".itemized-entries").append('\
         <div class="row form-group" item_id=' + id + '>\
             <div class="col-md-5 col-xs-4">\
                 <input class="description form-control" value="' + description + '">\
             </div>\
             <div class="col-md-3 col-xs-3">\
-                <input class="in-amount form-control text-right" type="number" min="0" style="color:green" onblur="calculateItemizedTotal()" value=' + parseFloat(income || 0).toFixed(2) + '>\
+                <input class="itemized-in-amount form-control text-right" type="number" min="0" style="color:green" onblur="calculateItemizedTotal(this.closest(\'.single-transaction\'))" value=' + parseFloat(income || 0).toFixed(2) + '>\
             </div>\
             <div class="col-md-3 col-xs-3">\
-                <input class="out-amount form-control text-right" type="number" min="0" style="color:red" onblur="calculateItemizedTotal()" value=' + parseFloat(expense || 0).toFixed(2) + '>\
+                <input class="itemized-out-amount form-control text-right" type="number" min="0" style="color:red" onblur="calculateItemizedTotal(this.closest(\'.single-transaction\'))" value=' + parseFloat(expense || 0).toFixed(2) + '>\
             </div>\
             <div class="col-md-1 col-xs-2">\
                 <button type="button" class="btn btn-danger" onclick="removeItemizedEntry(this)">&nbsp;<i class="fa fa-remove"></i>&nbsp;</button>\
             </div>\
         </div>\
     ');
-    calculateItemizedTotal();
+    calculateItemizedTotal(singleTransactionRef);
 };
 
 var removeItemizedEntry = function(node) {
     $(node).closest(".row").remove();
-    calculateItemizedTotal();
+    calculateItemizedTotal($(node).closest(".single-transaction"));
 };
 
-var calculateItemizedTotal = function() {
+var calculateItemizedTotal = function(singleTransactionRef) {
     var totalIn = 0, totalOut = 0;
-    $("#itemized-entries .in-amount").each(function(){
+    $(singleTransactionRef).find(".itemized-entries .itemized-in-amount").each(function(){
         if($(this).val())
             totalIn += parseFloat($(this).val());
     });
-    $("#itemized-entries .out-amount").each(function(){
+    $(singleTransactionRef).find(".itemized-entries .itemized-out-amount").each(function(){
         if($(this).val())
             totalOut += parseFloat($(this).val());
     });
-    $("#itemized-total-in").html(totalIn.toFixed(2));
-    $("#itemized-total-out").html(totalOut.toFixed(2));
-    $("#in-amount").val(totalIn.toFixed(2));
-    $("#out-amount").val(totalOut.toFixed(2));
+    $(singleTransactionRef).find(".itemized-total-in").html(totalIn.toFixed(2));
+    $(singleTransactionRef).find(".itemized-total-out").html(totalOut.toFixed(2));
+    $(singleTransactionRef).find(".in-amount").val(totalIn.toFixed(2));
+    $(singleTransactionRef).find(".out-amount").val(totalOut.toFixed(2));
     
     // enable / disable #in-amount / #out-amount
-    if($("#itemized-entries .row").length > 0) {
-        $("#in-amount").attr("disabled", "disabled");
-        $("#out-amount").attr("disabled", "disabled");
+    if($(singleTransactionRef).find(".itemized-entries .row").length > 0) {
+        $(singleTransactionRef).find(".in-amount").attr("disabled", "disabled");
+        $(singleTransactionRef).find(".out-amount").attr("disabled", "disabled");
     }
     else {
-        $("#in-amount").removeAttr("disabled");
-        $("#out-amount").removeAttr("disabled");
+        $(singleTransactionRef).find(".in-amount").removeAttr("disabled");
+        $(singleTransactionRef).find(".out-amount").removeAttr("disabled");
     }
 };
 
 var getColorBoxItemTemplate = function(text, color) {
     return "<span class='label label-default' style='background-color:" + color + "'>&nbsp;&nbsp;</span>&nbsp;&nbsp;<span>" + text + "</span>";
 };
+
+var categories;
+var resources;
+var currencies;
+var tags;
+
+var initSingleTransaction = function(singleTransactionRef) {
+    $(document).on('blur', 'input[type="number"]', function(){
+        this.value = parseFloat(this.value).toFixed(2);
+    });
+
+    // Category
+    $(singleTransactionRef).find(".category").select2({ data: categories,
+        templateSelection: function(item) {
+            return $("<span class='fa fa-" + item.icon + "'></span> <span>" + item.text + "</span>");//$(getColorBoxItemTemplate(item.text, item.background_color));
+        },
+        templateResult: function(item) {
+            return $("<span class='fa fa-" + item.icon + "'></span> <span>" + item.text + "</span>");
+        }
+    });
+
+    // Resource
+    $(singleTransactionRef).find(".in-resource").select2({ data: resources,
+        templateSelection: function(item) {
+            return $(getColorBoxItemTemplate(item.text, item.background_color));
+        },
+        templateResult: function(item) {
+            return $(getColorBoxItemTemplate(item.text, item.background_color));
+        }
+    });
+    $(singleTransactionRef).find(".out-resource").select2({ data: resources,
+        templateSelection: function(item) {
+            return $(getColorBoxItemTemplate(item.text, item.background_color));
+        },
+        templateResult: function(item) {
+            return $(getColorBoxItemTemplate(item.text, item.background_color));
+        }
+    });
+    
+    // Currency
+    $(singleTransactionRef).find(".in-currency").select2({ data: currencies });
+    $(singleTransactionRef).find(".out-currency").select2({ data: currencies });
+
+    // Tag
+    $(singleTransactionRef).find(".tag").select2({ tags: true, tokenSeparators: [','], data: tags });
+    
+    // Date
+    $(singleTransactionRef).find(".made-on").datepicker({
+        format: "yyyy-mm-dd",
+        maxViewMode: 2,
+        todayBtn: true,
+        autoclose: true,
+        todayHighlight: true
+    });
+
+    // Set default
+    $(singleTransactionRef).find(".category").val(202049).trigger("change");
+    $(singleTransactionRef).find(".in-resource").val(1).trigger("change"); // CW - Cash
+    $(singleTransactionRef).find(".out-resource").val(1).trigger("change"); // CW - Cash
+    $(singleTransactionRef).find(".in-currency").val(52).trigger("change"); // MYR
+    $(singleTransactionRef).find(".out-currency").val(52).trigger("change"); // MYR
+    $(singleTransactionRef).find(".made-on").datepicker("update", new Date());
+}
 
 $(document).ready(function() {
     $(document).on('blur', 'input[type="number"]', function(){
@@ -203,160 +287,152 @@ $(document).ready(function() {
     ).done(function(category, resource, currency, tag, transaction) {
 
         // Category
-        category = $.map(category[0], function(obj) {
+        categories = $.map(category[0], function(obj) {
             obj.id = obj.category_id;
             obj.text = obj.category_name;
             return obj;
         });
-        $("#category").select2({ data: category,
-            templateSelection: function(item) {
-                return $("<span class='fa fa-" + item.icon + "'></span> <span>" + item.text + "</span>");//$(getColorBoxItemTemplate(item.text, item.background_color));
-            },
-            templateResult: function(item) {
-                return $("<span class='fa fa-" + item.icon + "'></span> <span>" + item.text + "</span>");
-            }
-        });
-    
+
         // Resource
-        resource = $.map(resource[0], function(obj) {
+        resources = $.map(resource[0], function(obj) {
             obj.id = obj.resource_id;
             obj.text = obj.resource_name;
             return obj;
         });
-        $("#in-resource").select2({ data: resource,
-            templateSelection: function(item) {
-                return $(getColorBoxItemTemplate(item.text, item.background_color));
-            },
-            templateResult: function(item) {
-                return $(getColorBoxItemTemplate(item.text, item.background_color));
-            }
-        });
-        $("#out-resource").select2({ data: resource,
-            templateSelection: function(item) {
-                return $(getColorBoxItemTemplate(item.text, item.background_color));
-            },
-            templateResult: function(item) {
-                return $(getColorBoxItemTemplate(item.text, item.background_color));
-            }
-        });
-        
+
         // Currency
-        currency = $.map(currency[0], function(obj) {
+        currencies = $.map(currency[0], function(obj) {
             obj.id = obj.currency_id;
             obj.text = obj.currency_name;
             return obj;
         });
-        $("#in-currency").select2({ data: currency });
-        $("#out-currency").select2({ data: currency });
-    
+
         // Tag
-        tag = $.map(tag[0], function(obj) {
+        tags = $.map(tag[0], function(obj) {
             obj.id = obj.tag_id;
             obj.text = obj.tag_name;
             return obj;
         });
-        $("#tag").select2({ tags: true, tokenSeparators: [','], data: tag });
-        
-        // Date
-        $("#made-on").datepicker({
-            format: "yyyy-mm-dd",
-            maxViewMode: 2,
-            todayBtn: true,
-            autoclose: true,
-            todayHighlight: true
-        });
-    
-        // Set default
-        $("#category").val(202049).trigger("change");
-        $("#in-resource").val(1).trigger("change"); // CW - Cash
-        $("#out-resource").val(1).trigger("change"); // CW - Cash
-        $("#in-currency").val(52).trigger("change"); // MYR
-        $("#out-currency").val(52).trigger("change"); // MYR
-        $("#made-on").datepicker("update", new Date());
-            
+
+        var singleTransactionRef = $(".single-transaction.hidden").clone().removeClass("hidden");
+        $(".transactions").append(singleTransactionRef);
+        initSingleTransaction(singleTransactionRef);
+
         // Set data if edit mode
         if(transaction) {
             transaction = transaction[0][0];
-            $("#category").val(transaction.category_id).trigger("change");
-            $("#made-on").datepicker("update", new Date(transaction.made_on));
-            if(transaction.in_resource_id) $("#in-resource").val(transaction.in_resource_id).trigger("change");
-            if(transaction.out_resource_id) $("#out-resource").val(transaction.out_resource_id).trigger("change");
-            if(transaction.in_amount) $("#in-amount").val(parseFloat(transaction.in_amount).toFixed(2));
-            if(transaction.out_amount) $("#out-amount").val(parseFloat(transaction.out_amount).toFixed(2));
-            if(transaction.in_currency_id) $("#in-currency").val(transaction.in_currency_id).trigger("change");
-            if(transaction.out_currency_id) $("#out-currency").val(transaction.out_currency_id).trigger("change");
-            if(transaction.tags) $("#tag").val(transaction.tags.map(function(tag) { return tag.tag_id; })).trigger("change");
-            $("#description").val(transaction.description);
+            $(singleTransactionRef).find(".category").val(transaction.category_id).trigger("change");
+            $(singleTransactionRef).find(".made-on").datepicker("update", new Date(transaction.made_on));
+            if(transaction.in_resource_id) $(singleTransactionRef).find(".in-resource").val(transaction.in_resource_id).trigger("change");
+            if(transaction.out_resource_id) $(singleTransactionRef).find(".out-resource").val(transaction.out_resource_id).trigger("change");
+            if(transaction.in_amount) $(singleTransactionRef).find(".in-amount").val(parseFloat(transaction.in_amount).toFixed(2));
+            if(transaction.out_amount) $(singleTransactionRef).find(".out-amount").val(parseFloat(transaction.out_amount).toFixed(2));
+            if(transaction.in_currency_id) $(singleTransactionRef).find(".in-currency").val(transaction.in_currency_id).trigger("change");
+            if(transaction.out_currency_id) $(singleTransactionRef).find(".out-currency").val(transaction.out_currency_id).trigger("change");
+            if(transaction.tags) $(singleTransactionRef).find(".tag").val(transaction.tags.map(function(tag) { return tag.tag_id; })).trigger("change");
+            $(singleTransactionRef).find(".description").val(transaction.description);
             
             $.each(transaction.items, function(i, item){
-                addItemizedEntry(item.item_id, item.description, item.in_amount, item.out_amount || 0);
+                addItemizedEntry(singleTransactionRef, item.item_id, item.description, item.in_amount, item.out_amount || 0);
             });
         }
     });
     
     $("#save").click(function(){
-        
-        var transaction = { transaction_id: "{{ id }}" };
-        transaction.category_id = $("#category").val();
-        transaction.made_on = moment($("#made-on").datepicker("getDate")).format("YYYY-MM-DD");
-        if($("#in-amount").val() && $("#in-amount").val() != 0) {
-            transaction.in_amount = $("#in-amount").val();
-            transaction.in_resource_id = $("#in-resource").val();
-            transaction.in_currency_id = $("#in-currency").val();
-        }
-        if($("#out-amount").val() && $("#out-amount").val() != 0) {
-            transaction.out_amount = $("#out-amount").val();
-            transaction.out_resource_id = $("#out-resource").val();
-            transaction.out_currency_id = $("#out-currency").val();
-        }
-        transaction.tags = $("#tag").val();
-        transaction.description = $("#description").val();
-        
-        transaction.items = [];
-        $("#itemized-entries .row").each(function() {
-            var item = {};
-            item.item_id = $(this).attr("item_id");
-            item.description = $(this).find(".description").val();
-            item.in_amount = $(this).find(".in-amount").val();
-            item.out_amount = $(this).find(".out-amount").val();
-            transaction.items.push(item);
-        });
-        
-        $.ajax({
-            url: "/transactions/{{id}}",
-            method: "{{id ? "POST" : "PUT" }}",
-            data: transaction,
-            success: function() {
-                location.href = "/transactions/list";
-            },
-            error: function() {
-                alert("error");
+        $("#save").prop("disabled", true);
+        $("#save").find('.fa').removeClass('fa-save').addClass('fa-spinner fa-spin');
+
+        var promises = [];
+        $(".single-transaction:not(.hidden)").each(function(index, singleTransactionRef) {
+            var transaction = { transaction_id: "{{ id }}" };
+            transaction.category_id = $(singleTransactionRef).find(".category").val();
+            transaction.made_on = moment($(singleTransactionRef).find(".made-on").datepicker("getDate")).format("YYYY-MM-DD");
+            if($(singleTransactionRef).find(".in-amount").val() && $(singleTransactionRef).find(".in-amount").val() != 0) {
+                transaction.in_amount = $(singleTransactionRef).find(".in-amount").val();
+                transaction.in_resource_id = $(singleTransactionRef).find(".in-resource").val();
+                transaction.in_currency_id = $(singleTransactionRef).find(".in-currency").val();
             }
+            if($(singleTransactionRef).find(".out-amount").val() && $(singleTransactionRef).find(".out-amount").val() != 0) {
+                transaction.out_amount = $(singleTransactionRef).find(".out-amount").val();
+                transaction.out_resource_id = $(singleTransactionRef).find(".out-resource").val();
+                transaction.out_currency_id = $(singleTransactionRef).find(".out-currency").val();
+            }
+            transaction.tags = $(singleTransactionRef).find(".tag").val();
+            transaction.description = $(singleTransactionRef).find(".description").val();
+            
+            transaction.items = [];
+            $(singleTransactionRef).find(".itemized-entries .row").each(function() {
+                var item = {};
+                item.item_id = $(this).attr("item_id");
+                item.description = $(this).find(".description").val();
+                item.in_amount = $(this).find(".itemized-in-amount").val();
+                item.out_amount = $(this).find(".itemized-out-amount").val();
+                transaction.items.push(item);
+            });
+
+            $(singleTransactionRef).find(".status-icon").addClass('fa-spinner fa-spin');
+            
+            var promise = $.ajax({
+                url: "/transactions/{{id}}",
+                method: "{{id ? "POST" : "PUT" }}",
+                data: transaction,
+                success: function() {
+                    $(singleTransactionRef).find(".status-icon").removeClass('fa-spinner fa-spin').addClass('fa-check');
+                },
+                error: function(error) {
+                    $(singleTransactionRef).find(".status-icon").removeClass('fa-spinner fa-spin').addClass('fa-exclamation-circle');
+                    alert("error");
+                    console.error(error);
+                    $("#save").prop("disabled", false);
+                }
+            });
+            promises.push(promise);
+        });
+
+        Promise.all(promises).then(function() {
+            $("#save").find('.fa').removeClass('fa-spinner fa-spin').addClass('fa-check');
+            location.href = "/transactions/list";
+        }, function(error) {
+            console.error(error);
         });
     });
     
     if({{id ? "true" : "false"}}) {
         $("#delete").click(function(){
             bootbox.confirm("Delete transaction " + {{id}} + "?", function(result){
-                if(result)
+                if(result) {
+                    $("#delete").prop("disabled", true);
+                    $("#delete").find('.fa').removeClass('fa-trash-o').addClass('fa-spinner fa-spin');
                     $.ajax({
                         url: "/transactions/{{id}}",
                         method: "DELETE",
                         success: function() {
+                            $("#delete").find('.fa').removeClass('fa-spinner fa-spin').addClass('fa-check');
                             location.href = "/transactions/list";
                         },
-                        error: function() {
+                        error: function(error) {
+                            $("#delete").find('.fa').removeClass('fa-spinner fa-spin').addClass('fa-exclamation-circle');
                             alert("error");
+                            console.error(error);
+                            $("#delete").prop("disabled", false);
                         }
                     });
+                }
             });
         });
+        $("#add-transaction").hide();
     }
     else
         $("#delete").hide();
         
     $("#back").click(function(){
         location.href = "/transactions/list";
+    });
+
+    $("#add-transaction").click(function(){
+        var singleTransactionRef = $(".single-transaction.hidden").clone().removeClass("hidden");
+        $(".transactions").append(singleTransactionRef);
+        initSingleTransaction(singleTransactionRef);
     });
 });    
     
