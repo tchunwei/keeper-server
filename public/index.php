@@ -3,6 +3,13 @@ require '../vendor/autoload.php';
 
 $app = new \Slim\App(['settings' => ['displayErrorDetails' => true]]);
 
+$app->add(new \Slim\Middleware\HttpBasicAuthentication([
+    "users" => [
+        $_ENV['APP_USER'] => $_ENV['APP_PASSWORD']
+    ],
+    "secure" => false
+]));
+
 $container = $app->getContainer();
 
 // Register view on container
@@ -22,10 +29,10 @@ $container['view'] = function ($container) {
 $container['db'] = function ($container) {
     $db = new medoo([
         'database_type' => 'pgsql',
-        'database_name' => 'myfinance',
-        'server' => '10.0.75.1',
-        'username' => 'postgres',
-        'password' => '$ViTrox$',
+        'database_name' => $_ENV['DB_NAME'],
+        'server' => $_ENV['DB_HOST'],
+        'username' => $_ENV['DB_USER'],
+        'password' => $_ENV['DB_PASSWORD'],
         'charset' => 'utf8'
     ]);
 
