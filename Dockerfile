@@ -1,4 +1,4 @@
-FROM php:7.0-apache
+FROM php:7-apache
 
 RUN mkdir -p /var/www/html
 WORKDIR /var/www/html
